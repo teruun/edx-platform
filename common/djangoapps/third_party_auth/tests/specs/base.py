@@ -70,7 +70,11 @@ class HelperMixin(object):
         # Check that the correct provider was selected.
         self.assertContains(
             response,
-            u'successfully signed in with <strong>%s</strong>' % self.provider.name,
+            u'"errorMessage": null'
+        )
+        self.assertContains(
+            response,
+            u'"currentProvider": "{}"'.format(self.provider.name),
         )
         # Expect that each truthy value we've prepopulated the register form
         # with is actually present.
