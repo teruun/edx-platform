@@ -313,6 +313,14 @@ class CourseCcxCoachRole(CourseRole):
         super(CourseCcxCoachRole, self).__init__(self.ROLE, *args, **kwargs)
 
 
+class CourseDataResearcherRole(CourseRole):
+    """A Data Researcher"""
+    ROLE = 'data_researcher'
+
+    def __init__(self, *args, **kwargs):
+        super(CourseDataResearcherRole, self).__init__(self.ROLE, *args, **kwargs)
+
+
 class OrgStaffRole(OrgRole):
     """An organization staff member"""
     def __init__(self, *args, **kwargs):
