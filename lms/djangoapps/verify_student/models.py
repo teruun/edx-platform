@@ -23,6 +23,7 @@ from email.utils import formatdate
 
 import requests
 import six
+from config_models.models import ConfigurationModel
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
@@ -1108,3 +1109,23 @@ class VerificationDeadline(TimeStampedModel):
             return deadline.deadline
         except cls.DoesNotExist:
             return None
+
+
+class SSOReverificationConfig(ConfigurationModel):
+    """
+        SSOVerificationConfig
+    """
+
+    class Meta(object):
+        app_label = 'verify_student'
+        verbose_name = 'sso verify student argument'
+
+        arguments = models.TextField(
+            blank=True,
+            help_text='Useful for manually running a Jenkins job. Specify like "SSOVerification id,  \
+            SSOVerification id,',
+            default=''
+        )
+
+        def __unicode__(self):
+            return six.text_type(self.arguments)
