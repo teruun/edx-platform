@@ -653,6 +653,7 @@ class AccountCreationActivationAndPasswordChangeTest(TestCase):
     def test_request_password_change_inactive_user(self):
         # Create an account, but do not activate it
         create_account(self.USERNAME, self.PASSWORD, self.EMAIL)
+        self.assertEqual(len(mail.outbox), 0)
 
         request = RequestFactory().post('/password')
         request.user = Mock()
@@ -661,7 +662,7 @@ class AccountCreationActivationAndPasswordChangeTest(TestCase):
         with patch('crum.get_current_request', return_value=request):
             request_password_change(self.EMAIL, self.IS_SECURE)
 
-        # Verify that the activation email was still sent
+        # Verify that the password change email was still sent
         self.assertEqual(len(mail.outbox), 1)
 
     def _assert_is_datetime(self, timestamp):

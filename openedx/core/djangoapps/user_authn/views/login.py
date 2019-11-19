@@ -426,14 +426,14 @@ class LoginSessionView(APIView):
             200 OK
 
         """
-        return shim_student_view(login_user, check_logged_in=True)(request)
+        return shim_student_view(login_user)(request)
 
     @method_decorator(sensitive_post_parameters("password"))
     def dispatch(self, request, *args, **kwargs):
         return super(LoginSessionView, self).dispatch(request, *args, **kwargs)
 
 
-def shim_student_view(view_func, check_logged_in=False):
+def shim_student_view(view_func):
     """Create a "shim" view for a view function from the student Django app.
 
     Specifically, we need to:
@@ -450,10 +450,6 @@ def shim_student_view(view_func, check_logged_in=False):
 
     Arguments:
         view_func (function): The view function from the student Django app.
-
-    Keyword Args:
-        check_logged_in (boolean): If true, check whether the user successfully
-            authenticated and if not set the status to 403.
 
     Returns:
         function
@@ -537,7 +533,7 @@ def shim_student_view(view_func, check_logged_in=False):
             getattr(request, 'user', None) is not None
             and request.user.is_authenticated
         )
-        if check_logged_in and not is_authenticated:
+        if not is_authenticated:
             # If we get a 403 status code from the student view
             # this means we've successfully authenticated with a
             # third party provider, but we don't have a linked

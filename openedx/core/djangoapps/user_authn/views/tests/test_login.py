@@ -799,12 +799,12 @@ class StudentViewShimTest(TestCase):
         self.assertEqual(response["test-header"], "test")
 
     def test_check_logged_in(self):
-        view = self._shimmed_view(HttpResponse(), check_logged_in=True)
+        view = self._shimmed_view(HttpResponse())
         response = view(HttpRequest())
         self.assertEqual(response.status_code, 403)
 
-    def _shimmed_view(self, response, check_logged_in=False):
+    def _shimmed_view(self, response):
         def stub_view(request):
             self.captured_request = request
             return response
-        return shim_student_view(stub_view, check_logged_in=check_logged_in)
+        return shim_student_view(stub_view)
