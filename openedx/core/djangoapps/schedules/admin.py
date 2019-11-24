@@ -122,8 +122,8 @@ class CourseIdFilter(admin.SimpleListFilter):
 
 @admin.register(models.Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('username', 'course_id', 'active', 'start', 'start_date', 'upgrade_deadline', 'experience_display')
-    list_display_links = ('start', 'start_date', 'upgrade_deadline', 'experience_display')
+    list_display = ('username', 'course_id', 'active', 'start_date', 'upgrade_deadline', 'experience_display')
+    list_display_links = ('start_date', 'upgrade_deadline', 'experience_display')
     list_filter = (
         CourseIdFilter,
         'experience__experience_type',
