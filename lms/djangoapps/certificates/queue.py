@@ -291,7 +291,7 @@ class XQueueCertInterface(object):
         mode_is_verified = enrollment_mode in GeneratedCertificate.VERIFIED_CERTS_MODES
         user_is_verified = IDVerificationService.user_is_verified(student)
         cert_mode = enrollment_mode
-        is_eligible_for_certificate = (is_whitelisted and enrollment_mode != CourseMode.AUDIT) or \
+        is_eligible_for_certificate = enrollment_mode != CourseMode.AUDIT if is_whitelisted else \
             CourseMode.is_eligible_for_certificate(enrollment_mode, cert_status)
         unverified = False
         # For credit mode generate verified certificate
@@ -328,7 +328,7 @@ class XQueueCertInterface(object):
             mode_is_verified,
             generate_pdf
         )
-
+        # pylint: disable=no-member
         cert, created = GeneratedCertificate.objects.get_or_create(user=student, course_id=course_id)
 
         cert.mode = cert_mode
