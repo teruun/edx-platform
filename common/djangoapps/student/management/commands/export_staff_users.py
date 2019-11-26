@@ -66,7 +66,7 @@ class Command(BaseCommand):
                 'Failed to send staff users email for the period {}-{}'.format(starting_date, current_date)
             )
 
-        print('Complete!')
+        return course_access_roles.count()
 
     def send_email(self, user_data, days):
         """
