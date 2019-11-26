@@ -109,8 +109,12 @@ class XQueueCertInterfaceAddCertificateTest(ModuleStoreTestCase):
         mock_send = self.add_cert_to_queue(mode)
         self.assert_certificate_generated(mock_send, 'verified', template_name)
 
+    @override_settings(AUDIT_CERT_CUTOFF_DATE=datetime.now(pytz.UTC) - timedelta(days=1))
     def test_ineligible_cert_whitelisted(self):
-        """Test that audit mode students can receive a certificate if they are whitelisted."""
+        """
+        Test that audit mode students do not receive a certificate even
+        if they are whitelisted.
+        """
         # Enroll as audit
         CourseEnrollmentFactory(
             user=self.user_2,
@@ -127,11 +131,12 @@ class XQueueCertInterfaceAddCertificateTest(ModuleStoreTestCase):
                 mock_send.return_value = (0, None)
                 self.xqueue.add_cert(self.user_2, self.course.id)
 
-        # Assert cert generated correctly
-        self.assertTrue(mock_send.called)
+        # Ensure the certificate was not generated
+        self.assertFalse(mock_send.called)
         certificate = GeneratedCertificate.certificate_for_student(self.user_2, self.course.id)
         self.assertIsNotNone(certificate)
         self.assertEqual(certificate.mode, 'audit')
+        self.assertIn(certificate.status, (CertificateStatuses.audit_passing, CertificateStatuses.audit_notpassing))
 
     def add_cert_to_queue(self, mode):
         """
