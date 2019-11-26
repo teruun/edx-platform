@@ -16,6 +16,10 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+    """
+    Example usage:
+        $ ./manage.py lms export_staff_users 7  --settings=devstack_docker
+    """
 
     help = """
     This command will export a csv of all users who have logged in within the given days and
@@ -23,7 +27,12 @@ class Command(BaseCommand):
     """
 
     def add_arguments(self, parser):
-        parser.add_argument('days', type=int, help='Indicate the login time period in days starting from today')
+        parser.add_argument(
+            'days',
+            type=int,
+            default=7,
+            help='Indicate the login time period in days starting from today'
+        )
 
     subject = 'Staff users CSV'
     to_addresses = ['aazam@edx.org']
@@ -35,11 +44,11 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         days = kwargs['days']
         current_date = datetime.now()
-        last_week_date = current_date - timedelta(days=days)
+        starting_date = current_date - timedelta(days=days)
         active_courses = CourseOverview.objects.filter(end__gte=current_date).values_list('id', flat=True)
         course_access_roles = CourseAccessRole.objects.filter(
             role__in=['staff', 'instructor'],
-            user__last_login__range=(current_date, last_week_date),
+            user__last_login__range=(current_date, starting_date),
             course_id__in=active_courses,
             user__is_staff=False
         ).values('user__username', 'user__email', 'role')
@@ -47,14 +56,14 @@ class Command(BaseCommand):
             self.send_email(course_access_roles, days)
             logger.info(
                 'Sent staff users email for the period {} to {}. Staff users count:{}'.format(
-                    last_week_date,
+                    starting_date,
                     current_date,
                     course_access_roles.count()
                 )
             )
         except Exception:
             logger.exception(
-                'Failed to send staff users email for the period {}-{}'.format(last_week_date, current_date)
+                'Failed to send staff users email for the period {}-{}'.format(starting_date, current_date)
             )
 
         print('Complete!')
