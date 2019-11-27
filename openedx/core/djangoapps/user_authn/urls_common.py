@@ -35,7 +35,7 @@ urlpatterns = [
         name='registration_validation'
     ),
 
-    # Login
+    # TODO: Remove login_post. It was only used by Studio sign-in and some miscellaneous callers.
     url(r'^login_post$', login.login_user, name='login_post'),
     url(r'^login_ajax$', login.login_user, name="login_api"),
 
