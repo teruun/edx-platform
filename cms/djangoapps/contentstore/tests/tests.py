@@ -17,9 +17,7 @@ from django.core.cache import cache
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
-from freezegun import freeze_time
 from pytz import UTC
-from six.moves import range
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
 
@@ -141,7 +139,7 @@ class AuthTestCase(ContentStoreTestCase):
     def test_public_pages_load(self):
         """Make sure pages that don't require login load without error."""
         pages = (
-            reverse('login'),
+            settings.FRONTEND_LOGIN_URL,
             reverse('signup'),
         )
         for page in pages:
@@ -243,7 +241,7 @@ class AuthTestCase(ContentStoreTestCase):
 
         # check the the HTML has links to the right login page. Note that this is merely a content
         # check and thus could be fragile should the wording change on this page
-        expected = 'You can now <a href="' + reverse('login') + '">sign in</a>.'
+        expected = 'You can now <a href="' + settings.FRONTEND_LOGIN_URL + '">sign in</a>.'
         self.assertContains(resp, expected)
 
     def test_private_pages_auth(self):
@@ -325,7 +323,7 @@ class AuthTestCase(ContentStoreTestCase):
         Navigate to the login page and check the Sign Up button is hidden when ALLOW_PUBLIC_ACCOUNT_CREATION flag
         is turned off
         """
-        response = self.client.get(reverse('login'))
+        response = self.client.get(settings.FRONTEND_LOGIN_URL)
         self.assertNotContains(response, '<a class="action action-signup" href="/signup">Sign Up</a>')
 
     @mock.patch.dict(settings.FEATURES, {"ALLOW_PUBLIC_ACCOUNT_CREATION": False})
@@ -334,7 +332,7 @@ class AuthTestCase(ContentStoreTestCase):
         Navigate to the login page and check the Sign Up link is hidden when ALLOW_PUBLIC_ACCOUNT_CREATION flag
         is turned off
         """
-        response = self.client.get(reverse('login'))
+        response = self.client.get(settings.FRONTEND_LOGIN_URL)
         self.assertNotContains(
             response,
             '<a href="/signup" class="action action-signin">Don&#39;t have a Studio Account? Sign up!</a>'

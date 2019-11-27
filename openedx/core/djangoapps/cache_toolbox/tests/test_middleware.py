@@ -1,6 +1,7 @@
 """Tests for cached authentication middleware."""
 from __future__ import absolute_import
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.test import TestCase
@@ -43,4 +44,4 @@ class CachedAuthMiddlewareTestCase(TestCase):
     def test_session_change_cms(self):
         """Test session verification with CMS-specific URLs."""
         home_url = reverse('home')
-        self._test_change_session_hash(home_url, reverse('login') + '?next=' + home_url)
+        self._test_change_session_hash(home_url, settings.FRONTEND_LOGIN_URL + '?next=' + home_url)

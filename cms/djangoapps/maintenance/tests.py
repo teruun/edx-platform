@@ -92,7 +92,7 @@ class MaintenanceViewAccessTests(MaintenanceViewTestCase):
 
         # Expect a redirect to the login page
         redirect_url = '{login_url}?next={original_url}'.format(
-            login_url=reverse('login'),
+            login_url=settings.FRONTEND_LOGIN_URL,
             original_url=url,
         )
 

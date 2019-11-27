@@ -4,7 +4,6 @@ import unittest
 
 import ddt
 from django.conf import settings
-from django.urls import reverse
 from django.http import HttpResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -35,7 +34,7 @@ class ShortcutsTests(UrlResetMixin, TestCase):
         # test marketing site off
         with patch.dict('django.conf.settings.FEATURES', {'ENABLE_MKTG_SITE': False}):
             # we are using login because it is common across both cms and lms
-            expected_link = reverse('login')
+            expected_link = settings.FRONTEND_LOGIN_URL
             link = marketing_link('ABOUT')
             self.assertEquals(link, expected_link)
 
