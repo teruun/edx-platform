@@ -34,7 +34,7 @@ class ShortcutsTests(UrlResetMixin, TestCase):
         # test marketing site off
         with patch.dict('django.conf.settings.FEATURES', {'ENABLE_MKTG_SITE': False}):
             # we are using login because it is common across both cms and lms
-            expected_link = settings.FRONTEND_LOGIN_URL
+            expected_link = settings.LOGIN_URL
             link = marketing_link('ABOUT')
             self.assertEquals(link, expected_link)
 

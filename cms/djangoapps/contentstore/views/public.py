@@ -13,7 +13,6 @@ from waffle.decorators import waffle_switch
 
 from contentstore.config import waffle
 from edxmako.shortcuts import render_to_response
-from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 __all__ = ['signup', 'login_page', 'login_redirect_to_lms', 'howitworks', 'accessibility']
 
@@ -29,24 +28,6 @@ def signup(request):
         return redirect('/course/')
 
     return render_to_response('register.html', {'csrf': csrf_token})
-
-
-@ensure_csrf_cookie
-@xframe_options_deny
-def login_page(request):
-    """
-    Display the login form.
-    """
-    csrf_token = csrf(request)['csrf_token']
-
-    return render_to_response(
-        'login.html',
-        {
-            'csrf': csrf_token,
-            'forgot_password_link': "//{base}/login#forgot-password-modal".format(base=settings.LMS_BASE),
-            'platform_name': configuration_helpers.get_value('platform_name', settings.PLATFORM_NAME),
-        }
-    )
 
 
 def login_redirect_to_lms(request):
