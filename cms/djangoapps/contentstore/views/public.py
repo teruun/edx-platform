@@ -5,29 +5,27 @@ from __future__ import absolute_import
 
 from django.conf import settings
 from django.shortcuts import redirect
-from django.template.context_processors import csrf
 from django.utils.http import urlquote_plus
-from django.views.decorators.clickjacking import xframe_options_deny
-from django.views.decorators.csrf import ensure_csrf_cookie
 from waffle.decorators import waffle_switch
 
 from contentstore.config import waffle
 from edxmako.shortcuts import render_to_response
 
-__all__ = ['signup', 'login_redirect_to_lms', 'howitworks', 'accessibility']
+__all__ = ['login_redirect_to_lms', 'howitworks', 'accessibility']
 
 
-@ensure_csrf_cookie
-@xframe_options_deny
-def signup(request):
+def register_redirect_to_lms(request):
     """
-    Display the signup form.
+    This view redirects to the LMS register view. It is used to temporarily keep the old
+    Studio signup url alive.
     """
-    csrf_token = csrf(request)['csrf_token']
-    if request.user.is_authenticated:
-        return redirect('/course/')
-
-    return render_to_response('register.html', {'csrf': csrf_token})
+    next_url = request.GET.get('next')
+    absolute_next_url = request.build_absolute_uri(next_url)
+    register_url = '{base_url}/register{params}'.format(
+        base_url=settings.LMS_ROOT_URL,
+        params='?next=' + urlquote_plus(absolute_next_url) if next_url else '',
+    )
+    return redirect(register_url, permanent=True)
 
 
 def login_redirect_to_lms(request):

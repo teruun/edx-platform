@@ -14,7 +14,6 @@ from ddt import data, ddt, unpack
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from pytz import UTC
@@ -140,7 +139,7 @@ class AuthTestCase(ContentStoreTestCase):
         """Make sure pages that don't require login load without error."""
         pages = (
             settings.LOGIN_URL,
-            reverse('signup'),
+            settings.REGISTER_URL,
         )
         for page in pages:
             print(u"Checking '{0}'".format(page))
