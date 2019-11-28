@@ -14,7 +14,7 @@ from waffle.decorators import waffle_switch
 from contentstore.config import waffle
 from edxmako.shortcuts import render_to_response
 
-__all__ = ['signup', 'login_page', 'login_redirect_to_lms', 'howitworks', 'accessibility']
+__all__ = ['signup', 'login_redirect_to_lms', 'howitworks', 'accessibility']
 
 
 @ensure_csrf_cookie
