@@ -35,6 +35,9 @@ from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
     "Can't test schedules if the app isn't installed",
 )
 class TestSendCourseUpdate(ScheduleUpsellTestMixin, ScheduleSendEmailTestMixin, ModuleStoreTestCase):
+    """
+    Tests for django management command 'send_course_update'
+    """
     __test__ = True
 
     # pylint: disable=protected-access
@@ -57,6 +60,9 @@ class TestSendCourseUpdate(ScheduleUpsellTestMixin, ScheduleSendEmailTestMixin, 
         self.addCleanup(self.stop_highlights_patcher)
 
     def prepare_course_data(self, mock_get_current_site, is_self_paced=True):
+        """
+        Prepare course data with highlights
+        """
         self.highlights_patcher.stop()
         self.highlights_patcher = None
         mock_get_current_site.return_value = self.site_config.site
@@ -120,4 +126,4 @@ class TestSendCourseUpdate(ScheduleUpsellTestMixin, ScheduleSendEmailTestMixin, 
             day_offset=offset,
             bin_num=self._calculate_bin_for_user(enrollment.user),
         ))
-        self.assertEqual('{} Weekly Update'.format(enrollment.course.display_name), mail.outbox[0].subject)
+        self.assertEqual(u'{} Weekly Update'.format(enrollment.course.display_name), mail.outbox[0].subject)

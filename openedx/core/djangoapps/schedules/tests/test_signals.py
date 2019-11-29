@@ -34,6 +34,10 @@ from ..tests.factories import ScheduleConfigFactory
 class CreateScheduleTests(SharedModuleStoreTestCase):
 
     def assert_schedule_created(self, is_self_paced=True, experience_type=ScheduleExperience.EXPERIENCES.default):
+        """
+        Checks whether schedule is created and that it is created with the correct
+        experience type
+        """
         course = _create_course_run(self_paced=is_self_paced)
         enrollment = CourseEnrollmentFactory(
             course_id=course.id,
@@ -114,7 +118,6 @@ class CreateScheduleTests(SharedModuleStoreTestCase):
         self,
         hold_back_ratio,
         expect_schedule_created,
-        mock_random,
         mock_track,
         mock_get_current_site
     ):

@@ -1,3 +1,7 @@
+"""
+ACE message types for the schedules module.
+"""
+
 from __future__ import absolute_import
 
 import logging

@@ -353,7 +353,7 @@ class CourseUpdateResolver(BinnedSchedulesBaseResolver):
                 context,
             )
             with function_trace('enqueue_send_task'):
-                self.async_send_task.apply_async((self.site.id, str(msg)), retry=False)
+                self.async_send_task.apply_async((self.site.id, str(msg)), retry=False)  # pylint: disable=no-member
 
     def schedules_for_bin(self):
         week_num = abs(self.day_offset) // 7
