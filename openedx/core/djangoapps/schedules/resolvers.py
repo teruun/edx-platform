@@ -18,6 +18,7 @@ from lms.djangoapps.courseware.date_summary import verified_upgrade_deadline_lin
 from openedx.core.djangoapps.ace_common.template_context import get_base_template_context
 from openedx.core.djangoapps.schedules.content_highlights import get_week_highlights
 from openedx.core.djangoapps.schedules.exceptions import CourseUpdateDoesNotExist
+from openedx.core.djangoapps.schedules.message_types import CourseUpdate, InstructorLedCourseUpdate
 from openedx.core.djangoapps.schedules.models import Schedule, ScheduleExperience
 from openedx.core.djangoapps.schedules.utils import PrefixedDebugLoggerMixin
 from openedx.core.djangoapps.site_configuration.models import SiteConfiguration
@@ -340,6 +341,20 @@ class CourseUpdateResolver(BinnedSchedulesBaseResolver):
     num_bins = COURSE_UPDATE_NUM_BINS
     experience_filter = Q(experience__experience_type=ScheduleExperience.EXPERIENCES.course_updates)
 
+    def send(self, msg_type):
+        for (user, language, context, is_self_paced) in self.schedules_for_bin():
+            msg_type = CourseUpdate() if is_self_paced else InstructorLedCourseUpdate()
+            msg = msg_type.personalize(
+                Recipient(
+                    user.username,
+                    self.override_recipient_email or user.email,
+                ),
+                language,
+                context,
+            )
+            with function_trace('enqueue_send_task'):
+                self.async_send_task.apply_async((self.site.id, str(msg)), retry=False)
+
     def schedules_for_bin(self):
         week_num = abs(self.day_offset) // 7
         schedules = self.get_schedules_with_target_date_by_bin_and_orgs(
@@ -349,6 +364,7 @@ class CourseUpdateResolver(BinnedSchedulesBaseResolver):
         template_context = get_base_template_context(self.site)
         for schedule in schedules:
             enrollment = schedule.enrollment
+            course = schedule.enrollment.course
             user = enrollment.user
 
             try:
@@ -373,7 +389,7 @@ class CourseUpdateResolver(BinnedSchedulesBaseResolver):
                 })
                 template_context.update(_get_upsell_information_for_schedule(user, schedule))
 
-                yield (user, schedule.enrollment.course.closest_released_language, template_context)
+                yield (user, schedule.enrollment.course.closest_released_language, template_context, course.self_paced)
 
 
 def _get_trackable_course_home_url(course_id):

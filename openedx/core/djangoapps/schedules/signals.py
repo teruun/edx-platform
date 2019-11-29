@@ -175,10 +175,6 @@ def _create_schedule(enrollment, enrollment_created):
         log.debug('Schedules: Creation not enabled for this course or for this site')
         return
 
-    if not enrollment.course_overview.self_paced:
-        log.debug('Schedules: Creation only enabled for self-paced courses')
-        return
-
     # This represents the first date at which the learner can access the content. This will be the latter of
     # either the enrollment date or the course's start date.
     content_availability_date = max(enrollment.created, enrollment.course_overview.start)

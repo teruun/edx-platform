@@ -24,3 +24,7 @@ class UpgradeReminder(ScheduleMessageType):
 
 class CourseUpdate(ScheduleMessageType):
     pass
+
+
+class InstructorLedCourseUpdate(ScheduleMessageType):
+    pass

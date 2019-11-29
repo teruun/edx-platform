@@ -33,8 +33,8 @@ from ..tests.factories import ScheduleConfigFactory
 @skip_unless_lms
 class CreateScheduleTests(SharedModuleStoreTestCase):
 
-    def assert_schedule_created(self, experience_type=ScheduleExperience.EXPERIENCES.default):
-        course = _create_course_run(self_paced=True)
+    def assert_schedule_created(self, is_self_paced=True, experience_type=ScheduleExperience.EXPERIENCES.default):
+        course = _create_course_run(self_paced=is_self_paced)
         enrollment = CourseEnrollmentFactory(
             course_id=course.id,
             mode=CourseMode.AUDIT,
@@ -86,14 +86,13 @@ class CreateScheduleTests(SharedModuleStoreTestCase):
         self.assert_schedule_not_created()
 
     @override_waffle_flag(CREATE_SCHEDULE_WAFFLE_FLAG, True)
-    def test_schedule_config_creation_enabled_instructor_paced(self, mock_get_current_site):
+    @patch('openedx.core.djangoapps.schedules.signals.course_has_highlights')
+    def test_schedule_config_creation_enabled_instructor_paced(self, mock_course_has_highlights, mock_get_current_site):
         site = SiteFactory.create()
+        mock_course_has_highlights.return_value = True
         mock_get_current_site.return_value = site
-        ScheduleConfigFactory.create(site=site, enabled=True, create_schedules=True)
-        course = _create_course_run(self_paced=False)
-        enrollment = CourseEnrollmentFactory(course_id=course.id, mode=CourseMode.AUDIT)
-        with pytest.raises(Schedule.DoesNotExist, message="Expecting Schedule to not exist"):
-            enrollment.schedule
+        self.assert_schedule_created(is_self_paced=False, experience_type=ScheduleExperience.EXPERIENCES.course_updates)
+
 
     @override_waffle_flag(CREATE_SCHEDULE_WAFFLE_FLAG, True)
     @patch('openedx.core.djangoapps.schedules.signals.course_has_highlights')
