@@ -93,7 +93,6 @@ class CreateScheduleTests(SharedModuleStoreTestCase):
         mock_get_current_site.return_value = site
         self.assert_schedule_created(is_self_paced=False, experience_type=ScheduleExperience.EXPERIENCES.course_updates)
 
-
     @override_waffle_flag(CREATE_SCHEDULE_WAFFLE_FLAG, True)
     @patch('openedx.core.djangoapps.schedules.signals.course_has_highlights')
     def test_create_schedule_course_updates_experience(self, mock_course_has_highlights, mock_get_current_site):
