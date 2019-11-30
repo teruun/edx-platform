@@ -518,10 +518,6 @@ def activate_account(request, key):
     """
     When link in activation e-mail is clicked
     """
-    # If request is in Studio call the appropriate view
-    if theming_helpers.get_project_root_name().lower() == u'cms':
-        return activate_account_studio(request, key)
-
     try:
         registration = Registration.objects.get(activation_key=key)
     except (Registration.DoesNotExist, Registration.MultipleObjectsReturned):
@@ -583,37 +579,6 @@ def activate_account(request, key):
             )
 
     return redirect('dashboard')
-
-
-@ensure_csrf_cookie
-def activate_account_studio(request, key):
-    """
-    When link in activation e-mail is clicked and the link belongs to studio.
-    """
-    try:
-        registration = Registration.objects.get(activation_key=key)
-    except (Registration.DoesNotExist, Registration.MultipleObjectsReturned):
-        return render_to_response(
-            "registration/activation_invalid.html",
-            {'csrf': csrf(request)['csrf_token']}
-        )
-    else:
-        user_logged_in = request.user.is_authenticated
-        already_active = True
-        if not registration.user.is_active:
-            if waffle().is_enabled(PREVENT_AUTH_USER_WRITES):
-                return render_to_response('registration/activation_invalid.html',
-                                          {'csrf': csrf(request)['csrf_token']})
-            registration.activate()
-            already_active = False
-
-        return render_to_response(
-            "registration/activation_complete.html",
-            {
-                'user_logged_in': user_logged_in,
-                'already_active': already_active
-            }
-        )
 
 
 def validate_new_email(user, new_email):
