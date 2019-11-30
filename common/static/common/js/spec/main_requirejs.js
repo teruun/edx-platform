@@ -111,6 +111,7 @@
                 init: function(UnderscoreString) {
                     /* Mix non-conflicting functions from underscore.string
                      * (all but include, contains, and reverse) into the
+                     * TODO: What does this comment mean????
                      * Underscore namespace. This allows the login, register,
                      * and password reset templates to render independent of the
                      * access view.
