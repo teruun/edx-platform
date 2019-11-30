@@ -11,7 +11,7 @@ from waffle.decorators import waffle_switch
 from contentstore.config import waffle
 from edxmako.shortcuts import render_to_response
 
-__all__ = ['login_redirect_to_lms', 'howitworks', 'accessibility']
+__all__ = ['register_redirect_to_lms', 'login_redirect_to_lms', 'howitworks', 'accessibility']
 
 
 def register_redirect_to_lms(request):
