@@ -2202,6 +2202,7 @@ class EntryPageTestCase(TestCase):
         self._test_page('/accessibility')
 
 
+# TODO: Delete or update to test redirect???
 class SigninPageTestCase(TestCase):
     """
     Tests that the CSRF token is directly included in the signin form. This is
