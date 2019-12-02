@@ -118,6 +118,7 @@ class CreateScheduleTests(SharedModuleStoreTestCase):
         self,
         hold_back_ratio,
         expect_schedule_created,
+        mock_random,
         mock_track,
         mock_get_current_site
     ):
