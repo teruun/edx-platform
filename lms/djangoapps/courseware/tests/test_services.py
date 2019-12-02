@@ -3,8 +3,9 @@ Tests for courseware services.
 """
 from __future__ import absolute_import
 
-import ddt
 import json
+
+import ddt
 
 from lms.djangoapps.courseware.services import StudentModuleService
 from lms.djangoapps.courseware.tests.factories import StudentModuleFactory, UserFactory
