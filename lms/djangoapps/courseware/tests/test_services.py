@@ -57,7 +57,7 @@ class TestStudentModuleService(ModuleStoreTestCase):
 
     @ddt.data(
         ({'key_1a': 'value_1a', 'key_2a': 'value_2a'}),
-        ({'key_1b': 'value_1b', 'key_2b': 'value_2b'})
+        ({'key_1b': 'value_1b', 'key_2b': 'value_2b', 'key_3b': 'value_3b'})
     )
     def test_student_state(self, expected_state):
         """
@@ -74,3 +74,27 @@ class TestStudentModuleService(ModuleStoreTestCase):
             self.user.username, self.problem.location
         )
         self.assertDictEqual(state, expected_state)
+
+    @ddt.data(
+        ({'username': 'no_user', 'block_id': 'block-v1:myOrg+1234+2030_T2+type@openassessment+block@hash'}),
+        ({'username': 'no_user'}),
+        ({'block_id': 'block-v1:myOrg+1234+2030_T2+type@openassessment+block@hash'})
+    )
+    def test_nonexistent_student_module(self, state_params):
+        """
+        Verify the CSM service returns empty json for non-existent entry.
+
+        Scenario:
+            Given a user and a problem/block
+            Then create a student module entry for the user
+            If the state is obtained with incorrect parameters
+            Then an empty json is returned
+        """
+        params = {
+            'username': self.user.username,
+            'block_id': self.problem.location
+        }
+        params.update(state_params)
+        self._create_student_module({'key_1': 'value_1'})
+        state = StudentModuleService().get_state_as_json(**params)
+        self.assertFalse(state)
