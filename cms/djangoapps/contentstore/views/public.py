@@ -9,6 +9,7 @@ from django.utils.http import urlquote_plus
 from waffle.decorators import waffle_switch
 
 from contentstore.config import waffle
+from contentstore.utils import login_url_to_lms
 from edxmako.shortcuts import render_to_response
 
 __all__ = ['register_redirect_to_lms', 'login_redirect_to_lms', 'howitworks', 'accessibility']
@@ -23,7 +24,7 @@ def register_redirect_to_lms(request):
     absolute_next_url = request.build_absolute_uri(next_url)
     register_url = '{base_url}/register{params}'.format(
         base_url=settings.LMS_ROOT_URL,
-        params='?next=' + urlquote_plus(absolute_next_url) if next_url else '',
+        params='?next=' + urlquote_plus(absolute_next_url),
     )
     return redirect(register_url, permanent=True)
 
@@ -34,11 +35,7 @@ def login_redirect_to_lms(request):
     setting, which is where unauthenticated requests to protected endpoints are redirected.
     """
     next_url = request.GET.get('next')
-    absolute_next_url = request.build_absolute_uri(next_url)
-    login_url = '{base_url}/login{params}'.format(
-        base_url=settings.LMS_ROOT_URL,
-        params='?next=' + urlquote_plus(absolute_next_url) if next_url else '',
-    )
+    login_url = login_url_to_lms(request, next_url)
     return redirect(login_url)
 
 

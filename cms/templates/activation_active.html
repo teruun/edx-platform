@@ -1,5 +1,9 @@
 <%page expression_filter="h"/>
-<%! from django.utils.translation import ugettext as _ %>
+<%!
+from django.utils.translation import ugettext as _
+
+from contentstore.utils import login_url_to_lms
+%>
 <%inherit file="base.html" />
 
 <%block name="content">
@@ -26,7 +30,7 @@
 
       <ul class="list-actions">
         <li class="action-item">
-          <a href="/signin" class="action-primary action-signin">
+          <a href="${login_url_to_lms(request)}" class="action-primary action-signin">
             ${_("Sign into {studio_name}").format(studio_name=settings.STUDIO_SHORT_NAME)}
           </a>
         </li>

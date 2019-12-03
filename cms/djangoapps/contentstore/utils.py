@@ -9,6 +9,7 @@ from datetime import datetime
 import six
 from django.conf import settings
 from django.urls import reverse
+from django.utils.http import urlquote_plus
 from django.utils.translation import ugettext as _
 from opaque_keys.edx.keys import CourseKey, UsageKey
 from opaque_keys.edx.locator import LibraryLocator
@@ -581,3 +582,16 @@ def get_sibling_urls(subsection):
     if next_loc:
         next_url = reverse_usage_url('container_handler', next_loc)
     return prev_url, next_url
+
+
+def login_url_to_lms(request, next_url=None):
+    """
+    Returns the LMS login url that redirects back to Studio.
+    """
+    next_url = next_url if next_url else settings.LOGIN_REDIRECT_URL
+    absolute_next_url = request.build_absolute_uri(next_url)
+    login_url = '{base_url}/login{params}'.format(
+        base_url=settings.LMS_ROOT_URL,
+        params='?next=' + urlquote_plus(absolute_next_url),
+    )
+    return login_url

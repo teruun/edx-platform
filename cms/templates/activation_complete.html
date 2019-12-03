@@ -1,6 +1,8 @@
 <%!
-from openedx.core.djangolib.markup import Text
 from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import Text
+
+from contentstore.utils import login_url_to_lms
 %>
 <%page expression_filter="h"/>
 <%inherit file="base.html" />
@@ -35,7 +37,7 @@ from django.utils.translation import ugettext as _
 
       <ul class="list-actions">
         <li class="action-item">
-          <a href="/signin" class="action-primary action-signin">
+          <a href="${login_url_to_lms(request)}" class="action-primary action-signin">
             ${Text(_("Sign into {studio_name}")).format(
               studio_name=Text(settings.STUDIO_SHORT_NAME)
             )}

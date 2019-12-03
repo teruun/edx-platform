@@ -88,8 +88,9 @@ urlpatterns = [
     url(r'^howitworks$', contentstore.views.howitworks, name='howitworks'),
     # TODO: Add toggle annotation for removal of signup url when traffic proves it is no longer in use
     url(r'^signup$', contentstore.views.register_redirect_to_lms, name='register_redirect_to_lms'),
-    # TODO: Add toggle annotation for removal of signup url when traffic proves it is no longer in use
-    url(r'^signin$', contentstore.views.login_redirect_to_lms, name='login_redirect_to_lms'),
+    # TODO: Add toggle annotation for removal of signin url when traffic proves it is no longer in use
+    url(r'^signin$', contentstore.views.login_redirect_to_lms),
+    url(r'^signin_redirect_to_lms$', contentstore.views.login_redirect_to_lms, name='login_redirect_to_lms'),
     url(r'^request_course_creator$', contentstore.views.request_course_creator, name='request_course_creator'),
     url(r'^course_team/{}(?:/(?P<email>.+))?$'.format(COURSELIKE_KEY_PATTERN),
         contentstore.views.course_team_handler, name='course_team_handler'),
